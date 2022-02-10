@@ -4,8 +4,11 @@
 
 #include "RayTracer.h"
 
-RayTracer::RayTracer(json &j) {
+#include <iostream>
 
+
+RayTracer::RayTracer(json &j) : threadPool() {
+    std::cout << threadPool.size();
 }
 
 RayTracer::~RayTracer() {
