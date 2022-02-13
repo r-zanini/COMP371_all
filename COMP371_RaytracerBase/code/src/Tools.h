@@ -91,7 +91,7 @@ public:
 
     T dot() const { return x * x + y * y + z * z; };
 
-    T norm() const { return sqrt(dot());}
+    T norm() const { return sqrt(dot()); }
 };
 
 template<typename T>
@@ -128,7 +128,11 @@ public:
 
 class Printable {
 public:
-    friend ostream &operator<<(ostream &os, const Printable &p) {return p.toStream(os);}
+    Printable() = default;
+
+    virtual ~Printable() = default;
+
+    friend ostream &operator<<(ostream &os, const Printable &p) { return p.toStream(os); }
 
     virtual ostream &toStream(ostream &os) const = 0;
 };
@@ -145,13 +149,13 @@ inline float clamp(const float &v, const float &min, const float &max) {
 
 inline float rnd() {
     static std::uniform_real_distribution<float> distribution(0.0, 1.0);
-    static std::mt19937 generator((size_t)std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    static std::mt19937 generator((size_t) std::chrono::high_resolution_clock::now().time_since_epoch().count());
     return distribution(generator);
 }
 
 inline float rnd(float min, float max) {
     static std::uniform_real_distribution<float> distribution(min, max);
-    static std::mt19937 generator((size_t)std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    static std::mt19937 generator((size_t) std::chrono::high_resolution_clock::now().time_since_epoch().count());
     return distribution(generator);
 }
 
