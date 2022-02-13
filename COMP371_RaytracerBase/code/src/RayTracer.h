@@ -6,6 +6,7 @@
 #define RAYTRACERV3_RAYTRACER_H
 
 #include "ThreadPool.h"
+#include "Ray.hpp"
 
 #include "json.hpp"
 
