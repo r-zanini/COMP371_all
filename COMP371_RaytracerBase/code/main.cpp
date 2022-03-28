@@ -51,16 +51,26 @@ int main(int argc, char* argv[])
         cout<<"Parsed successfuly"<<endl;
         
 #ifdef COURSE_SOLUTION
+        srand(234);
         cout<<"Running course solution"<<endl;
+        time_t tstart, tend;
+        tstart = time(0);
         RT371::RayTracer<RT371::Kernelf> rt(j);
         cout<<"Running!"<<endl;
         rt.run();
+        tend = time(0);
+        cout << "It took "<< difftime(tend, tstart) <<" second(s)."<< endl;
 #else
         
 #ifdef STUDENT_SOLUTION
-        cout<<"Running studnt solution"<<endl;
+        cout<<"Running student solution"<<endl;
+
+        time_t tstart, tend;
+        tstart = time(0);
         RayTracer rt(j);
         rt.run();
+        tend = time(0);
+        cout << "It took "<< difftime(tend, tstart) <<" second(s)."<< endl;
 #else
         // GIven code - a bunch of test functions to showcase the funcitonality
         test_eigen();

@@ -31,7 +31,7 @@ class TTrackBall {
   public:
 
     // from the old cs488 code
-    void vRotateScene(float, float, float, float, glm::mat4&, glm::mat4* m =NULL);
+    void vRotateScene(float, float, float, float, glm::mat4&);
     void vGenerateRotVec(float ,float  ,float, float, float&, float&, float&);
 
 	glm::mat4 track_matrix;

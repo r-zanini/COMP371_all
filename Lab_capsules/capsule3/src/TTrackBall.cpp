@@ -10,8 +10,8 @@
 #endif
 
 
-#define RADIUS .25
-//#define RADIUS 1
+#define RADIUS2 .25
+//#define RADIUS2 1
 
 TTrackBall::TTrackBall()
     :scrWidth(0), scrHeight(0){
@@ -66,7 +66,7 @@ void TTrackBall::track(glm::vec2 old_p, glm::vec2 new_p, float scale){
     // generate the matrix
     vRotateScene(fx, fy, fz, scale, m);
 	
-	glm::vec4 newP;
+	glm::vec4 newP = pivot_point;
     newP =  track_matrix * pivot_point;
 
     // rotate around arbitrary point (pivot_point in this case)
@@ -75,7 +75,7 @@ void TTrackBall::track(glm::vec2 old_p, glm::vec2 new_p, float scale){
 		
     // multiply the matrix
     track_matrix = m *  track_matrix;
-    
+
     // around an arbitrary point ch 2
 	track_matrix = glm::translate(track_matrix, glm::vec3(newP[0], newP[1], newP[2]));
 }
@@ -99,7 +99,7 @@ glm::mat4& TTrackBall::getMatrix(){
  * Purpose   : Generates a matrix based on a rotation vector.
  */
 void TTrackBall::vRotateScene(float fVecX, float fVecY, float fVecZ, 
-float fScale, glm::mat4& mNewMat, glm::mat4*  mInvMat)
+float fScale, glm::mat4& mNewMat)
 {
     
     float fRadians, fInvLength, fNewVecX, fNewVecY, fNewVecZ;
@@ -120,8 +120,6 @@ float fScale, glm::mat4& mNewMat, glm::mat4*  mInvMat)
 	 matrix.
      */
     if (fRadians > -0.000001 && fRadians < 0.000001) {
-		// JEAN TODO 3
-		// mNewMat.setIdentity();
 		glm::mat4 mNewMat = glm::mat4(1.0f);
         return;
     }
@@ -133,36 +131,10 @@ float fScale, glm::mat4& mNewMat, glm::mat4*  mInvMat)
     fNewVecX   = fVecX * fInvLength;
     fNewVecY   = -fVecY * fInvLength;
     fNewVecZ   = fVecZ * fInvLength;
-    fRadians  *= fScale;  
-
-    /*
-     * Use OpenGL to rotate about an arbitrary axis
-     */
-	 // JEAN TODO 4 **********************
+    fRadians  *= fScale;
 
 	glm::mat4 I(1.0);
 	mNewMat = glm::rotate(I, fRadians, glm::vec3(fNewVecX, fNewVecY, fNewVecZ));
-	 
-
-#if 0
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-    glRotatef(fRadians, fNewVecX, fNewVecY, fNewVecZ);
-	// How am I supposed to get the buffer? and what is a buffer?
-    glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *)mNewMat.getBuffer());
-    glPopMatrix();
-
-    // inverse matrix
-    if(mInvMat){
-	glPushMatrix();
-	glLoadIdentity();
-	glRotatef(-fRadians, fNewVecX, fNewVecY, fNewVecZ);
-	float mm[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, mm);//(GLfloat *)mInvMat->getBuffer());
-	glPopMatrix();
-    }
-#endif
 }
 
 /*
@@ -198,12 +170,10 @@ void TTrackBall::vGenerateRotVec(float fOldX, float fOldY,
     nWinWidth = scrWidth;
     nWinHeight = scrHeight;
     if(scrWidth>scrHeight)
-	nEdge = scrHeight;
+	    nEdge = scrHeight;
     else
-	nEdge = scrWidth;
-   		
-   
-    
+	    nEdge = scrWidth;
+
     nXOrigin = nWinWidth / 2;
     nYOrigin = nWinHeight / 2;
 
@@ -212,18 +182,18 @@ void TTrackBall::vGenerateRotVec(float fOldX, float fOldY,
      */
     fNewX    = (fCurrentX - (float)nXOrigin) * 2.0 / (float)nEdge;
     fNewY    = (fCurrentY - (float)nYOrigin) * 2.0 / (float)nEdge;
-    fNewZ    = (RADIUS - fNewX * fNewX - fNewY * fNewY);
+    fNewZ    = (RADIUS2 - fNewX * fNewX - fNewY * fNewY);
    
    fLastX    = (fOldX - (float)nXOrigin) * 2.0 / (float)nEdge;
    fLastY    = (fOldY - (float)nYOrigin) * 2.0 / (float)nEdge;
-   fLastZ    = (RADIUS - fLastX * fLastX - fLastY * fLastY);
+   fLastZ    = (RADIUS2 - fLastX * fLastX - fLastY * fLastY);
 
    /*
     * Moving around outside of window.
     */
 
 	if (fLastZ < 0.0) {
-      fLength = sqrt(1.0 - fLastZ);
+      fLength = sqrt(RADIUS2 - fLastZ);
       fLastZ  = 0.0;
       fLastX /= fLength;
       fLastY /= fLength;
@@ -233,7 +203,7 @@ void TTrackBall::vGenerateRotVec(float fOldX, float fOldY,
 
 
 	if (fNewZ < 0.0) {
-      fLength = sqrt(1.0 - fNewZ);
+      fLength = sqrt(RADIUS2 - fNewZ);
       fNewZ  = 0.0;
       fNewX /= fLength;
       fNewY /= fLength;
@@ -249,11 +219,6 @@ void TTrackBall::vGenerateRotVec(float fOldX, float fOldY,
    fVecY = fLastZ * fNewX - fNewZ * fLastX;
    fVecZ = -(fLastX * fNewY - fNewX * fLastY);
 
-   /*
-    * Update for next time.
-    */
-   fLastX = fNewX;
-   fLastY = fNewY;
-   fLastZ = fNewZ;
+
 }
   
